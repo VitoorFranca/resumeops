@@ -13,6 +13,25 @@ export async function GET() {
   return Response.json(dbUser?.profile ?? null);
 }
 
+export async function PATCH(req: Request) {
+  const { userId } = await auth();
+  if (!userId) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+
+  const body = await req.json();
+
+  const dbUser = await db.user.findUnique({ where: { clerkId: userId } });
+  if (!dbUser) return Response.json({ error: 'User not found' }, { status: 404 });
+
+  const profile = await db.profile.update({
+    where: { userId: dbUser.id },
+    data: {
+      ...(body.language !== undefined && { language: body.language }),
+    },
+  });
+
+  return Response.json(profile);
+}
+
 export async function PUT(req: Request) {
   const { userId } = await auth();
   if (!userId) return Response.json({ error: 'Unauthorized' }, { status: 401 });

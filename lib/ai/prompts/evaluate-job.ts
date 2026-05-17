@@ -1,5 +1,12 @@
 import { anthropic } from '../client';
 import type { Profile } from '@prisma/client';
+import type { Locale } from '@/i18n/request';
+
+const LANGUAGE_NAMES: Record<Locale, string> = {
+  en: 'English',
+  'pt-BR': 'Brazilian Portuguese',
+  es: 'Spanish',
+};
 
 function safeParseJSON(text: string) {
   const cleaned = text.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
@@ -28,13 +35,16 @@ function serializeProfile(profile: Profile): string {
     .join('\n');
 }
 
-export async function evaluateJob(jobText: string, profile: Profile) {
+export async function evaluateJob(jobText: string, profile: Profile, language: Locale = 'en') {
   const profileBlock = serializeProfile(profile);
+  const languageName = LANGUAGE_NAMES[language];
 
   const response = await anthropic.messages.create({
     model: 'claude-sonnet-4-6',
     max_tokens: 3000,
     system: `You are a senior technical recruiter and career advisor. You evaluate job fit with precision.
+
+LANGUAGE: Respond in ${languageName}. All text fields (gaps, notes, recommendations, explanations) must be written in ${languageName}.
 
 RULES — NEVER BREAK THESE:
 - ONLY reference experiences, skills, and projects that exist in the candidate profile

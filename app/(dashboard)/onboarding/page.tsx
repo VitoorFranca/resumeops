@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 type Step = 'cv' | 'targets';
 
@@ -14,6 +15,7 @@ interface ParsedCV {
 
 export default function OnboardingPage() {
   const router = useRouter();
+  const t = useTranslations('onboarding');
   const [step, setStep] = useState<Step>('cv');
   const [cvText, setCvText] = useState('');
   const [parsed, setParsed] = useState<ParsedCV | null>(null);
@@ -38,7 +40,7 @@ export default function OnboardingPage() {
       setParsed(data);
       setStep('targets');
     } catch {
-      setError('Could not parse your CV. Try again or paste more text.');
+      setError(t('parseError'));
     } finally {
       setLoading(false);
     }
@@ -63,7 +65,7 @@ export default function OnboardingPage() {
       });
       router.push('/dashboard');
     } catch {
-      setError('Could not save your profile. Try again.');
+      setError(t('saveError'));
     } finally {
       setLoading(false);
     }
@@ -74,13 +76,11 @@ export default function OnboardingPage() {
       <div className="w-full max-w-lg bg-white rounded-2xl border border-gray-200 p-8">
         {step === 'cv' ? (
           <>
-            <h1 className="text-2xl font-bold mb-2">Paste your CV</h1>
-            <p className="text-gray-500 text-sm mb-6">
-              Plain text, markdown, or copy-paste from Word. We extract your experience, skills, and education.
-            </p>
+            <h1 className="text-2xl font-bold mb-2">{t('pasteTitle')}</h1>
+            <p className="text-gray-500 text-sm mb-6">{t('pasteDesc')}</p>
             <textarea
               className="w-full h-56 border border-gray-200 rounded-xl p-4 text-sm font-mono resize-none focus:outline-none focus:ring-2 focus:ring-teal-500"
-              placeholder="Paste your CV here..."
+              placeholder={t('pastePlaceholder')}
               value={cvText}
               onChange={e => setCvText(e.target.value)}
             />
@@ -90,31 +90,35 @@ export default function OnboardingPage() {
               disabled={loading || !cvText.trim()}
               className="mt-4 w-full bg-gray-900 text-white py-3 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-gray-700"
             >
-              {loading ? 'Parsing...' : 'Parse my CV →'}
+              {loading ? t('parsing') : t('parseBtn')}
             </button>
           </>
         ) : (
           <>
-            <h1 className="text-2xl font-bold mb-2">Almost done</h1>
+            <h1 className="text-2xl font-bold mb-2">{t('almostTitle')}</h1>
             {parsed && (
               <p className="text-sm text-teal-700 bg-teal-50 rounded-lg px-3 py-2 mb-6">
-                Found {(parsed.experiences as unknown[]).length} experiences · {(parsed.skills as unknown[]).length} skills · {(parsed.education as unknown[]).length} education items
+                {t('foundItems', {
+                  exp: (parsed.experiences as unknown[]).length,
+                  skills: (parsed.skills as unknown[]).length,
+                  edu: (parsed.education as unknown[]).length,
+                })}
               </p>
             )}
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium block mb-1">Target roles (comma-separated)</label>
+                <label className="text-sm font-medium block mb-1">{t('targetRolesLabel')}</label>
                 <input
                   type="text"
                   className="w-full border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
-                  placeholder="Senior AI Engineer, Staff Platform Engineer"
+                  placeholder={t('targetRolesPlaceholder')}
                   value={targetRoles}
                   onChange={e => setTargetRoles(e.target.value)}
                 />
               </div>
               <div className="flex gap-3">
                 <div className="flex-1">
-                  <label className="text-sm font-medium block mb-1">Salary min (USD)</label>
+                  <label className="text-sm font-medium block mb-1">{t('salaryMin')}</label>
                   <input
                     type="number"
                     className="w-full border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
@@ -124,7 +128,7 @@ export default function OnboardingPage() {
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="text-sm font-medium block mb-1">Salary max (USD)</label>
+                  <label className="text-sm font-medium block mb-1">{t('salaryMax')}</label>
                   <input
                     type="number"
                     className="w-full border border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
@@ -141,7 +145,7 @@ export default function OnboardingPage() {
               disabled={loading}
               className="mt-6 w-full bg-gray-900 text-white py-3 rounded-xl text-sm font-medium disabled:opacity-50 hover:bg-gray-700"
             >
-              {loading ? 'Saving...' : 'Start evaluating →'}
+              {loading ? t('saving') : t('startBtn')}
             </button>
           </>
         )}

@@ -2,6 +2,7 @@ import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import { db } from '@/lib/db/client';
 import JobInput from '@/components/jobs/JobInput';
+import { getTranslations } from 'next-intl/server';
 
 export default async function DashboardPage() {
   const { userId } = await auth();
@@ -21,6 +22,8 @@ export default async function DashboardPage() {
 
   if (!dbUser?.profile?.fullName) redirect('/onboarding');
 
+  const t = await getTranslations('dashboard');
+
   const freeLimit = 3;
   const usedThisMonth = dbUser.jobs.filter(j => {
     const start = new Date();
@@ -31,10 +34,10 @@ export default async function DashboardPage() {
   return (
     <div className="max-w-2xl mx-auto px-6 py-10">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold">Evaluate a job</h1>
+        <h1 className="text-2xl font-bold">{t('title')}</h1>
         {dbUser.plan === 'FREE' && (
           <span className="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-            {usedThisMonth}/{freeLimit} free evaluations used
+            {t('evaluationsUsed', { used: usedThisMonth, limit: freeLimit })}
           </span>
         )}
       </div>
@@ -43,7 +46,7 @@ export default async function DashboardPage() {
 
       {dbUser.jobs.length > 0 && (
         <div className="mt-12">
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Recent evaluations</h2>
+          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">{t('recentTitle')}</h2>
           <div className="space-y-2">
             {dbUser.jobs.map(job => (
               <a
@@ -52,7 +55,7 @@ export default async function DashboardPage() {
                 className="flex items-center justify-between p-4 bg-white border border-gray-100 rounded-xl hover:border-gray-300 transition-colors"
               >
                 <div>
-                  <p className="font-medium text-sm">{job.title ?? 'Untitled role'}</p>
+                  <p className="font-medium text-sm">{job.title ?? t('untitledRole')}</p>
                   <p className="text-xs text-gray-400">{job.company ?? '—'}</p>
                 </div>
                 {job.matchScore != null && (

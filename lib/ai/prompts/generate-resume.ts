@@ -1,6 +1,13 @@
 import { anthropic } from '../client';
 import type { Profile } from '@prisma/client';
 import { extractKeywords } from './extract-keywords';
+import type { Locale } from '@/i18n/request';
+
+const LANGUAGE_NAMES: Record<Locale, string> = {
+  en: 'English',
+  'pt-BR': 'Brazilian Portuguese',
+  es: 'Spanish',
+};
 
 function safeParseJSON(text: string) {
   const cleaned = text.replace(/^```json\n?/, '').replace(/\n?```$/, '').trim();
@@ -38,8 +45,10 @@ export async function generateResume(
   jobText: string,
   profile: Profile,
   matchReport: MatchReport,
+  language: Locale = 'en',
 ): Promise<Record<string, string>> {
   const [keywords] = await Promise.all([extractKeywords(jobText)]);
+  const languageName = LANGUAGE_NAMES[language];
 
   const profileBlock = serializeProfile(profile);
   const nonBlockerGaps = matchReport.gaps
@@ -51,6 +60,8 @@ export async function generateResume(
     model: 'claude-sonnet-4-6',
     max_tokens: 4000,
     system: `You are generating a tailored resume. You will be audited for accuracy.
+
+LANGUAGE: Write all resume content in ${languageName}. Every sentence, phrase, and word in the output must be in ${languageName}.
 
 ANTI-HALLUCINATION CONTRACT — MANDATORY:
 - Every metric (number, %, $) must exist verbatim in the candidate profile

@@ -43,7 +43,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
   let result: Record<string, unknown>;
   try {
-    result = await withRetry(() => evaluateJob(job.rawText, profile));
+    result = await withRetry(() => evaluateJob(job.rawText, profile, (profile.language as import('@/i18n/request').Locale) ?? 'en'));
   } catch (e) {
     console.error('Evaluation failed', e);
     return Response.json({ error: 'evaluation_failed', message: 'AI evaluation failed. Try again.' }, { status: 500 });

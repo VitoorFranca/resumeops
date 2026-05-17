@@ -1,6 +1,37 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import type { Profile } from '@prisma/client';
+import type { Locale } from '@/i18n/request';
+
+const CV_SECTION_TITLES: Record<Locale, Record<string, string>> = {
+  en: {
+    summary: 'Professional Summary',
+    competencies: 'Core Competencies',
+    experience: 'Experience',
+    projects: 'Projects',
+    education: 'Education',
+    certifications: 'Certifications',
+    skills: 'Technical Skills',
+  },
+  'pt-BR': {
+    summary: 'Resumo Profissional',
+    competencies: 'Competências Principais',
+    experience: 'Experiência',
+    projects: 'Projetos',
+    education: 'Formação',
+    certifications: 'Certificações',
+    skills: 'Habilidades Técnicas',
+  },
+  es: {
+    summary: 'Resumen Profesional',
+    competencies: 'Competencias Principales',
+    experience: 'Experiencia',
+    projects: 'Proyectos',
+    education: 'Formación',
+    certifications: 'Certificaciones',
+    skills: 'Habilidades Técnicas',
+  },
+};
 
 // Loaded once at module init — template doesn't change at runtime
 const templateHtml = readFileSync(join(process.cwd(), 'templates/cv-template.html'), 'utf-8');
@@ -47,9 +78,10 @@ export interface ResumeSections {
   education: string;
 }
 
-export function fillTemplate(sections: ResumeSections, profile: Profile): string {
+export function fillTemplate(sections: ResumeSections, profile: Profile, language: Locale = 'en'): string {
+  const titles = CV_SECTION_TITLES[language] ?? CV_SECTION_TITLES.en;
   const replacements: Record<string, string> = {
-    '{{LANG}}': 'en',
+    '{{LANG}}': language,
     '{{PAGE_WIDTH}}': '8.5in',
     '{{NAME}}': profile.fullName,
     '{{EMAIL}}': profile.email,
@@ -58,13 +90,13 @@ export function fillTemplate(sections: ResumeSections, profile: Profile): string
     '{{PORTFOLIO_DISPLAY}}': profile.portfolioUrl ? extractDomain(profile.portfolioUrl) : '',
     '{{LINKEDIN_URL}}': profile.linkedinUrl ?? '',
     '{{PORTFOLIO_URL}}': profile.portfolioUrl ?? '',
-    '{{SECTION_SUMMARY}}': 'Professional Summary',
-    '{{SECTION_COMPETENCIES}}': 'Core Competencies',
-    '{{SECTION_EXPERIENCE}}': 'Experience',
-    '{{SECTION_PROJECTS}}': 'Projects',
-    '{{SECTION_EDUCATION}}': 'Education',
-    '{{SECTION_CERTIFICATIONS}}': 'Certifications',
-    '{{SECTION_SKILLS}}': 'Technical Skills',
+    '{{SECTION_SUMMARY}}': titles.summary,
+    '{{SECTION_COMPETENCIES}}': titles.competencies,
+    '{{SECTION_EXPERIENCE}}': titles.experience,
+    '{{SECTION_PROJECTS}}': titles.projects,
+    '{{SECTION_EDUCATION}}': titles.education,
+    '{{SECTION_CERTIFICATIONS}}': titles.certifications,
+    '{{SECTION_SKILLS}}': titles.skills,
     '{{SUMMARY_TEXT}}': sections.summary,
     '{{COMPETENCIES}}': sections.competencies,
     '{{EXPERIENCE}}': sections.experience,

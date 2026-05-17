@@ -41,6 +41,7 @@ model Profile {
   salaryMin    Int?
   salaryMax    Int?
   remotePolicy String  @default("REMOTE_OK")
+  language     String  @default("en")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }

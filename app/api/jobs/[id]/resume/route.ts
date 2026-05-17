@@ -27,6 +27,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     throw e;
   }
 
+  const body = await req.json().catch(() => ({})) as { language?: string };
+
   const [job, profile] = await Promise.all([
     db.job.findUnique({ where: { id: jobId, userId: dbUser.id } }),
     db.profile.findUnique({ where: { userId: dbUser.id } }),
@@ -36,17 +38,23 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   if (!profile) return Response.json({ error: 'Profile not found' }, { status: 400 });
   if (!job.matchReport) return Response.json({ error: 'Job not yet evaluated' }, { status: 400 });
 
+  const SUPPORTED = ['en', 'pt-BR', 'es'] as const;
+  type Locale = (typeof SUPPORTED)[number];
+  const language: Locale = SUPPORTED.includes(body.language as Locale)
+    ? (body.language as Locale)
+    : ((profile.language as Locale) ?? 'en');
+
   const matchReport = job.matchReport as MatchReport;
 
   let sections: Record<string, string>;
   try {
-    sections = await generateResume(job.rawText, profile, matchReport);
+    sections = await generateResume(job.rawText, profile, matchReport, language);
   } catch (e) {
     console.error('Resume generation failed', e);
     return Response.json({ error: 'generation_failed', message: 'Resume generation failed. Try again.' }, { status: 500 });
   }
 
-  const resumeHtml = fillTemplate(sections as unknown as Parameters<typeof fillTemplate>[0], profile);
+  const resumeHtml = fillTemplate(sections as unknown as Parameters<typeof fillTemplate>[0], profile, language);
 
   const resume = await db.resumeVersion.create({
     data: { userId: dbUser.id, jobId, html: resumeHtml, status: 'ready' },

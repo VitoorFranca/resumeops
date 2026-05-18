@@ -1,7 +1,7 @@
 import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import { db } from '@/lib/db/client';
-import ApplicationTable from '@/components/tracker/ApplicationTable';
+import KanbanBoard from '@/components/tracker/KanbanBoard';
 import { getTranslations } from 'next-intl/server';
 
 export default async function TrackerPage() {
@@ -17,11 +17,13 @@ export default async function TrackerPage() {
     orderBy: { createdAt: 'desc' },
   });
 
-  const t = await getTranslations('tracker');
+  const t = await getTranslations('applications');
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-10">
-      <h1 className="text-2xl font-bold mb-8">{t('title')}</h1>
+    <div className="flex flex-col h-full overflow-hidden">
+      <div className="px-6 py-5 shrink-0">
+        <h1 className="text-2xl font-bold">{t('title')}</h1>
+      </div>
       {applications.length === 0 ? (
         <div className="text-center py-20 text-gray-400">
           <p>{t('empty')}</p>
@@ -30,7 +32,9 @@ export default async function TrackerPage() {
           </a>
         </div>
       ) : (
-        <ApplicationTable applications={applications} />
+        <div className="flex-1 overflow-hidden">
+          <KanbanBoard applications={applications} />
+        </div>
       )}
     </div>
   );

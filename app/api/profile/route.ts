@@ -25,6 +25,19 @@ export async function PATCH(req: Request) {
   const profile = await db.profile.update({
     where: { userId: dbUser.id },
     data: {
+      ...(body.fullName !== undefined && { fullName: body.fullName }),
+      ...(body.email !== undefined && { email: body.email }),
+      ...(body.location !== undefined && { location: body.location }),
+      ...(body.linkedinUrl !== undefined && { linkedinUrl: body.linkedinUrl }),
+      ...(body.portfolioUrl !== undefined && { portfolioUrl: body.portfolioUrl }),
+      ...(body.narrative !== undefined && { narrative: body.narrative }),
+      ...(body.experiences !== undefined && { experiences: body.experiences }),
+      ...(body.skills !== undefined && { skills: body.skills }),
+      ...(body.education !== undefined && { education: body.education }),
+      ...(body.targetRoles !== undefined && { targetRoles: JSON.stringify(body.targetRoles) }),
+      ...(body.salaryMin !== undefined && { salaryMin: body.salaryMin }),
+      ...(body.salaryMax !== undefined && { salaryMax: body.salaryMax }),
+      ...(body.remotePolicy !== undefined && { remotePolicy: body.remotePolicy }),
       ...(body.language !== undefined && { language: body.language }),
     },
   });

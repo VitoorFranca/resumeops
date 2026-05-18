@@ -36,7 +36,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </Link>
         <nav className="flex flex-col gap-1 flex-1">
           <NavLink href="/dashboard">Dashboard</NavLink>
-          <NavLink href="/tracker">Tracker</NavLink>
+          <NavLink href="/profile">Profile</NavLink>
+          <NavLink href="/tracker">Candidaturas</NavLink>
           <NavLink href="/settings">Settings</NavLink>
         </nav>
         <div className="mt-auto">

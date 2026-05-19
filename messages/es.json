@@ -100,7 +100,11 @@
     "errorGenFail": "Falló la generación del currículum. Inténtalo de nuevo.",
     "errorGeneric": "Algo salió mal. Inténtalo de nuevo.",
     "languageLabel": "Idioma del currículum",
-    "generateBtn": "Generar currículum →"
+    "generateBtn": "Generar currículum →",
+    "insightsTitle": "Perspectivas del Currículum",
+    "keywordsLabel": "Palabras clave inyectadas",
+    "featuredLabel": "Roles destacados",
+    "omittedLabel": "Roles eliminados"
   },
   "onboarding": {
     "pasteTitle": "Pega tu CV",

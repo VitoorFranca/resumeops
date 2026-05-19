@@ -100,7 +100,11 @@
     "errorGenFail": "Falha na geração do currículo. Tente novamente.",
     "errorGeneric": "Algo deu errado. Tente novamente.",
     "languageLabel": "Idioma do currículo",
-    "generateBtn": "Gerar currículo →"
+    "generateBtn": "Gerar currículo →",
+    "insightsTitle": "Insights do Currículo",
+    "keywordsLabel": "Palavras-chave inseridas",
+    "featuredLabel": "Experiências destacadas",
+    "omittedLabel": "Experiências removidas"
   },
   "onboarding": {
     "pasteTitle": "Cole seu currículo",

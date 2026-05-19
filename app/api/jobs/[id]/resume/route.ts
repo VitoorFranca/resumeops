@@ -47,8 +47,9 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const matchReport = job.matchReport as MatchReport;
 
   let sections: Record<string, string>;
+  let meta: import('@/lib/ai/prompts/generate-resume').ResumeMeta;
   try {
-    sections = await generateResume(job.rawText, profile, matchReport, language);
+    ({ sections, meta } = await generateResume(job.rawText, profile, matchReport, language));
   } catch (e) {
     console.error('Resume generation failed', e);
     return Response.json({ error: 'generation_failed', message: 'Resume generation failed. Try again.' }, { status: 500 });
@@ -60,5 +61,5 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     data: { userId: dbUser.id, jobId, html: resumeHtml, status: 'ready' },
   });
 
-  return Response.json({ resumeHtml, resumeId: resume.id });
+  return Response.json({ resumeHtml, resumeId: resume.id, meta });
 }

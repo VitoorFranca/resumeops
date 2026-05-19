@@ -100,7 +100,11 @@
     "errorGenFail": "Resume generation failed. Try again.",
     "errorGeneric": "Something went wrong. Try again.",
     "languageLabel": "Resume language",
-    "generateBtn": "Generate resume →"
+    "generateBtn": "Generate resume →",
+    "insightsTitle": "Resume Insights",
+    "keywordsLabel": "Keywords injected",
+    "featuredLabel": "Featured roles",
+    "omittedLabel": "Roles cut"
   },
   "onboarding": {
     "pasteTitle": "Paste your CV",

@@ -8,6 +8,12 @@ import { useTranslations } from 'next-intl';
 const LOCALES = ['en', 'pt-BR', 'es'] as const;
 type Locale = (typeof LOCALES)[number];
 
+type ResumeMeta = {
+  injectedKeywords: string[];
+  featuredRoles: string[];
+  omittedRoles: string[];
+};
+
 export default function ResumeGenerator({ defaultLanguage }: { defaultLanguage: string }) {
   const { id: jobId } = useParams<{ id: string }>();
   const t = useTranslations('resume');
@@ -15,6 +21,7 @@ export default function ResumeGenerator({ defaultLanguage }: { defaultLanguage: 
   const [language, setLanguage] = useState<string>(defaultLanguage);
   const [resumeHtml, setResumeHtml] = useState<string | null>(null);
   const [resumeId, setResumeId] = useState<string | null>(null);
+  const [resumeMeta, setResumeMeta] = useState<ResumeMeta | null>(null);
   const [generating, setGenerating] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState('');
@@ -36,6 +43,7 @@ export default function ResumeGenerator({ defaultLanguage }: { defaultLanguage: 
       }
       setResumeHtml(data.resumeHtml);
       setResumeId(data.resumeId);
+      setResumeMeta(data.meta ?? null);
       setGenerated(true);
     } catch {
       setError(t('errorGeneric'));
@@ -144,6 +152,56 @@ export default function ResumeGenerator({ defaultLanguage }: { defaultLanguage: 
           <div className="w-8 h-8 border-2 border-teal-500 border-t-transparent rounded-full animate-spin mb-4" />
           <p className="text-sm">{t('generating')}</p>
           <p className="text-xs mt-1">{t('generatingHint')}</p>
+        </div>
+      )}
+
+      {resumeMeta && (
+        <div className="bg-white border border-gray-100 rounded-2xl p-5 mb-5 space-y-4">
+          <h2 className="text-sm font-semibold text-gray-700">{t('insightsTitle')}</h2>
+
+          {resumeMeta.injectedKeywords.length > 0 && (
+            <div>
+              <p className="text-xs text-gray-400 mb-2">{t('keywordsLabel')}</p>
+              <div className="flex flex-wrap gap-2">
+                {resumeMeta.injectedKeywords.map(kw => (
+                  <span key={kw} className="px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 text-xs font-medium border border-teal-100">
+                    {kw}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {(resumeMeta.featuredRoles.length > 0 || resumeMeta.omittedRoles.length > 0) && (
+            <div className="grid grid-cols-2 gap-4">
+              {resumeMeta.featuredRoles.length > 0 && (
+                <div>
+                  <p className="text-xs text-gray-400 mb-2">{t('featuredLabel')}</p>
+                  <ul className="space-y-1">
+                    {resumeMeta.featuredRoles.map(role => (
+                      <li key={role} className="flex items-start gap-1.5 text-xs text-gray-700">
+                        <span className="mt-1 w-1.5 h-1.5 rounded-full bg-teal-500 shrink-0" />
+                        {role}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {resumeMeta.omittedRoles.length > 0 && (
+                <div>
+                  <p className="text-xs text-gray-400 mb-2">{t('omittedLabel')}</p>
+                  <ul className="space-y-1">
+                    {resumeMeta.omittedRoles.map(role => (
+                      <li key={role} className="flex items-start gap-1.5 text-xs text-gray-400">
+                        <span className="mt-1 w-1.5 h-1.5 rounded-full bg-gray-300 shrink-0" />
+                        {role}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
 

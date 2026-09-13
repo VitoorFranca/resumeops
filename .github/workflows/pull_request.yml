@@ -2,15 +2,19 @@ name: PR Pipeline
 
 on:
   pull_request:
-    branches:
-      - master
-    types:
-      - opened
+    branches: [master]
+    types: [opened, synchronize, reopened]
 
 jobs:
   agent-analysis:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
-        - uses: VitoorFranca/pr-analysis@v0
-          with:
-            greeting: 'Hello World'
+      - uses: VitoorFranca/pr-analysis@master
+        with:
+          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+          model: claude-haiku-4-5
+          ignore-paths: |
+            **/*.md

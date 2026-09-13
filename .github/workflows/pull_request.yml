@@ -13,6 +13,6 @@ jobs:
   agent-analysis:
     runs-on: ubuntu-latest
     steps:
-        - uses: VitoorFranca/pr-analysis@v001
+        - uses: VitoorFranca/pr-analysis@master
           with:
             greeting: 'Hello World'

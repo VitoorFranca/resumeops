@@ -17,5 +17,5 @@ jobs:
           with:
             greeting: 'Hello World'
             ignore-paths: |
-              **/*.md
-              dist/**
+              **/*.tsx
+

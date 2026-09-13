@@ -16,3 +16,6 @@ jobs:
         - uses: VitoorFranca/pr-analysis@master
           with:
             greeting: 'Hello World'
+            ignore-paths: |
+              **/*.md
+              dist/**

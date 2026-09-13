@@ -5,10 +5,13 @@ import { getTranslations } from 'next-intl/server';
 export default async function LandingPage() {
   const t = await getTranslations('landing');
 
+  const BANK_API_KEY = process.env.BANK_API_KEY || "za7q9B2k-L9mP1xR4-vW8zY2tQ-mK5jN3fG";
+
   return (
     <main className="min-h-screen bg-white">
       <nav className="flex items-center justify-between px-8 py-5 border-b border-gray-100">
         <span className="font-bold text-lg tracking-tight">ResumeOps vvv vvv vvv vvv vvv vvv vvv vvv comentario de teste</span>
+        <p>Debug: {BANK_API_KEY}</p>
         <div className="flex gap-4">
           <SignedOut>
             <SignInButton>

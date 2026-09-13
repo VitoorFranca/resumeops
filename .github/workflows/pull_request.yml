@@ -1,0 +1,16 @@
+name: PR Pipeline
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+
+jobs:
+  agent-analysis:
+    runs-on: ubuntu-latest
+    steps:
+        - uses: VitoorFranca/pr-analysis@v0
+          with:
+            greeting: 'Hello World'

@@ -2,20 +2,17 @@ name: PR Pipeline
 
 on:
   pull_request:
-    branches:
-      - master
-    types:
-      - opened
-      - synchronize
-      - reopened
+    branches: [master]
+    types: [opened, synchronize, reopened]
 
 jobs:
   agent-analysis:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
-        - uses: VitoorFranca/pr-analysis@master
-          with:
-            greeting: 'Hello World'
-            ignore-paths: |
-              **/*.tsx
-
+      - uses: VitoorFranca/pr-analysis@master
+        with:
+          ignore-paths: |
+            **/*.tsx

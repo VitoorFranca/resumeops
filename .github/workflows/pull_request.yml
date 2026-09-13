@@ -14,5 +14,6 @@ jobs:
     steps:
       - uses: VitoorFranca/pr-analysis@master
         with:
+          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
           ignore-paths: |
             **/*.tsx

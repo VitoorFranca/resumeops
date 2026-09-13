@@ -6,6 +6,8 @@ on:
       - master
     types:
       - opened
+      - synchronize
+      - reopened
 
 jobs:
   agent-analysis:

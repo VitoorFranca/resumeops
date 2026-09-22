@@ -16,5 +16,7 @@ jobs:
         with:
           anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
           model: claude-haiku-4-5
+          anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+          typesafe-api-key: ${{ secrets.TYPESAFE_API_KEY }}
           ignore-paths: |
             **/*.md

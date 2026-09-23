@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 
 const LOCALES = ['en', 'pt-BR', 'es'] as const;
-type Locale = (typeof LOCALES)[number];
 
 export default function LanguageSelect({ currentLanguage }: { currentLanguage: string }) {
   const t = useTranslations('languages');

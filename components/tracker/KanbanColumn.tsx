@@ -12,11 +12,9 @@ export type ColumnConfig = {
 export default function KanbanColumn({
   column,
   apps,
-  activeId,
 }: {
   column: ColumnConfig;
   apps: Application[];
-  activeId: string | null;
 }) {
   const t = useTranslations('applications');
   const { setNodeRef, isOver } = useDroppable({ id: column.status });

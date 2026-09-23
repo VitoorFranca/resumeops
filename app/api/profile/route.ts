@@ -1,5 +1,6 @@
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { db } from '@/lib/db/client';
+import { profilePatchSchema, profilePutSchema } from '@/lib/validation/profile';
 
 export async function GET() {
   const { userId } = await auth();
@@ -17,7 +18,11 @@ export async function PATCH(req: Request) {
   const { userId } = await auth();
   if (!userId) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const body = await req.json();
+  const parsed = profilePatchSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return Response.json({ error: 'invalid_body', issues: parsed.error.flatten() }, { status: 400 });
+  }
+  const body = parsed.data;
 
   const dbUser = await db.user.findUnique({ where: { clerkId: userId } });
   if (!dbUser) return Response.json({ error: 'User not found' }, { status: 404 });
@@ -49,8 +54,12 @@ export async function PUT(req: Request) {
   const { userId } = await auth();
   if (!userId) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
+  const parsed = profilePutSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return Response.json({ error: 'invalid_body', issues: parsed.error.flatten() }, { status: 400 });
+  }
+  const body = parsed.data;
   const clerkUser = await currentUser();
-  const body = await req.json();
 
   // Ensure user exists
   const dbUser = await db.user.upsert({

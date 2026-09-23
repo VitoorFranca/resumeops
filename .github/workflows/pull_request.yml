@@ -18,4 +18,16 @@ jobs:
           model: claude-sonnet-4-6
           typesafe-api-key: ${{ secrets.TYPESAFE_API_KEY }}
           ignore-paths: |
-            **/*.md
+            package-lock.json
+            yarn.lock
+            pnpm-lock.yaml
+            next-env.d.ts
+            *.min.js
+            *.map
+            __snapshots__/
+            *.snap
+            public/**/*.png
+            public/**/*.jpg
+            public/**/*.webp
+            public/**/*.ico
+            public/**/*.woff2

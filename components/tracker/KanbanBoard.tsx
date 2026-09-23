@@ -69,7 +69,6 @@ export default function KanbanBoard({ applications: initial }: { applications: A
               key={col.status}
               column={col}
               apps={colApps}
-              activeId={activeId}
             />
           );
         })}

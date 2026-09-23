@@ -2,6 +2,7 @@ import { verifyToken } from '@clerk/backend';
 import { db } from '@/lib/db/client';
 import { evaluateJob } from '@/lib/ai/prompts/evaluate-job';
 import { enforceQuota, QuotaError } from '@/lib/quota';
+import { withRetry } from '@/lib/ai/with-retry';
 import type { Locale } from '@/i18n/request';
 
 const CORS_HEADERS = {
@@ -100,16 +101,4 @@ export async function POST(req: Request) {
   });
 
   return Response.json({ jobId: job.id, ...result }, { headers: CORS_HEADERS });
-}
-
-async function withRetry<T>(fn: () => Promise<T>, retries = 2): Promise<T> {
-  for (let i = 0; i <= retries; i++) {
-    try {
-      return await fn();
-    } catch (e) {
-      if (i === retries) throw e;
-      await new Promise(r => setTimeout(r, 1000 * (i + 1)));
-    }
-  }
-  throw new Error('unreachable');
 }

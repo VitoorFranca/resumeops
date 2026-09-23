@@ -2,18 +2,7 @@ import { auth } from '@clerk/nextjs/server';
 import { db } from '@/lib/db/client';
 import { evaluateJob } from '@/lib/ai/prompts/evaluate-job';
 import { enforceQuota, QuotaError } from '@/lib/quota';
-
-async function withRetry<T>(fn: () => Promise<T>, retries = 2): Promise<T> {
-  for (let i = 0; i <= retries; i++) {
-    try {
-      return await fn();
-    } catch (e) {
-      if (i === retries) throw e;
-      await new Promise(r => setTimeout(r, 1000 * (i + 1)));
-    }
-  }
-  throw new Error('unreachable');
-}
+import { withRetry } from '@/lib/ai/with-retry';
 
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { userId: clerkId } = await auth();

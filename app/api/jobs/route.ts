@@ -49,7 +49,8 @@ export async function GET(req: Request) {
   if (!clerkId) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
   const { searchParams } = new URL(req.url);
-  const limit = parseInt(searchParams.get('limit') ?? '20');
+  const requestedLimit = parseInt(searchParams.get('limit') ?? '20', 10);
+  const limit = Number.isFinite(requestedLimit) ? Math.min(Math.max(requestedLimit, 1), 100) : 20;
 
   const dbUser = await db.user.findUnique({ where: { clerkId } });
   if (!dbUser) return Response.json([]);

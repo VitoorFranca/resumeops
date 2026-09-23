@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 
 const LOCALES = ['en', 'pt-BR', 'es'] as const;
-type Locale = (typeof LOCALES)[number];
 
 type ResumeMeta = {
   injectedKeywords: string[];
